@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en" data-platform="other">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Woolly Blocks</title>
+  <meta name="description" content="Woolly Blocks: a wool block puzzle for iPhone, iPad and Android.">
+  <meta name="theme-color" content="#2a1d17">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Woolly Blocks">
+  <meta property="og:description" content="A wool block puzzle for iPhone, iPad and Android.">
+  <!-- og:image exige URL absoluta. Depois de publicar o site, adicione (troque pelo seu endereço):
+  <meta property="og:image" content="https://SEU-USUARIO.github.io/woolly-blocks/assets/icon.png">
+  -->
+
+  <link rel="icon" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Grandstander:wght@800&family=Nunito:wght@600;700&display=swap">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grandstander:wght@800&family=Nunito:wght@600;700&display=swap">
+  </noscript>
+  <style>
+:root {
+  --burlap: #3a2a21;
+  --deep: #2a1d17;
+  --ivory: #f6ecd9;
+  --teal: #2fb5b0;
+  --orange: #f08a2c;
+  --red: #d9453b;
+  --yellow: #f3c53b;
+  --green: #6bb04a;
+  --display: "Grandstander", ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --go: 1500ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ivory);
+  font-family: var(--body);
+  background-color: var(--burlap);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 4px);
+}
+
+.page {
+  flex: 1;
+  width: min(100%, 26rem);
+  padding: max(2rem, env(safe-area-inset-top)) 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.icon {
+  display: block;
+  width: 132px;
+  height: 132px;
+  margin-bottom: 1.5rem;
+  border-radius: 30px;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.25), 0 18px 30px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 11vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+
+.tagline {
+  margin: 0.5rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.stitch {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1.75rem 0 1.25rem;
+}
+
+.blk {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--c);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
+
+.blk::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 6px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
+@keyframes fill {
+  from { opacity: 0.2; transform: scale(0.86); }
+  to   { opacity: 1;   transform: none; }
+}
+
+.is-going .blk {
+  opacity: 0.2;
+  animation: fill 220ms ease-out forwards;
+  animation-delay: calc(var(--go) * var(--i) / 5);
+}
+
+.status {
+  min-height: 1.6em;
+  margin: 0 0 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.stores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--ivory);
+  border-radius: 14px;
+  background: var(--ivory);
+  color: var(--deep);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+[data-platform="ios"] #btn-android,
+[data-platform="android"] #btn-ios {
+  background: transparent;
+  color: var(--ivory);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+[data-platform="android"] #btn-android { order: -1; }
+
+.foot {
+  width: min(100%, 26rem);
+  padding: 0.5rem 1.5rem max(1.25rem, env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.langs {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.langs button {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ivory);
+  font: inherit;
+  font-weight: 700;
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.langs button[aria-pressed="true"] {
+  opacity: 1;
+  text-decoration: underline dashed;
+  text-underline-offset: 6px;
+}
+
+.studio {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.55;
+}
+
+.btn:focus-visible,
+.langs button:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-going .blk { animation: none; opacity: 1; }
+  .btn { transition: none; }
+}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <img id="icon" class="icon" src="assets/icon.png" alt="" width="132" height="132" onerror="this.hidden = true">
+
+    <h1>Woolly Blocks</h1>
+    <p class="tagline" data-i18n="tagline">A wool block puzzle</p>
+
+    <div class="stitch" aria-hidden="true">
+      <span class="blk" style="--c: var(--teal);   --i: 0"></span>
+      <span class="blk" style="--c: var(--orange); --i: 1"></span>
+      <span class="blk" style="--c: var(--red);    --i: 2"></span>
+      <span class="blk" style="--c: var(--yellow); --i: 3"></span>
+      <span class="blk" style="--c: var(--green);  --i: 4"></span>
+    </div>
+
+    <p class="status" id="status" role="status" aria-live="polite" data-i18n="choose">Choose where to download</p>
+
+    <!-- Os links das lojas ficam SÓ aqui: o script lê estes href para redirecionar. -->
+    <div class="stores">
+      <a class="btn" id="btn-ios"
+         href="https://apps.apple.com/app/id6810894121"
+         data-i18n="btnIos">Download from the App Store</a>
+      <a class="btn" id="btn-android"
+         href="https://play.google.com/store/apps/details?id=com.ArcadeNightmare.WoollyBlocks"
+         data-i18n="btnAndroid">Download from Google Play</a>
+    </div>
+
+    <p class="hint" id="hint" data-i18n="hint" hidden>If the store doesn't open, tap the button.</p>
+  </main>
+
+  <footer class="foot">
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-lang="pt" aria-pressed="false">Português</button>
+      <button type="button" data-lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+    <p class="studio">CSK Games</p>
+  </footer>
+
+  <script>
+(function () {
+  "use strict";
+
+  var REDIRECT_MS = 1500;
+  var REDUCED_MS = 600;
+
+  var COPY = {
+    pt: {
+      title: "Woolly Blocks",
+      tagline: "Quebra-cabeça de blocos de lã",
+      choose: "Escolha onde baixar",
+      openingIos: "Abrindo a App Store…",
+      openingAndroid: "Abrindo o Google Play…",
+      btnIos: "Baixar na App Store",
+      btnAndroid: "Baixar no Google Play",
+      hint: "Se a loja não abrir, toque no botão."
+    },
+    es: {
+      title: "Woolly Blocks",
+      tagline: "Rompecabezas de bloques de lana",
+      choose: "Elige dónde descargarlo",
+      openingIos: "Abriendo App Store…",
+      openingAndroid: "Abriendo Google Play…",
+      btnIos: "Descargar en App Store",
+      btnAndroid: "Descargar en Google Play",
+      hint: "Si la tienda no se abre, toca el botón."
+    },
+    en: {
+      title: "Woolly Blocks",
+      tagline: "A wool block puzzle",
+      choose: "Choose where to download",
+      openingIos: "Opening the App Store…",
+      openingAndroid: "Opening Google Play…",
+      btnIos: "Download from the App Store",
+      btnAndroid: "Download from Google Play",
+      hint: "If the store doesn't open, tap the button."
+    }
+  };
+
+  // Parâmetros de teste: ?platform=ios|android|other  ?lang=pt|es|en  ?nogo
+  var root = document.documentElement;
+  var statusEl = document.getElementById("status");
+  var hintEl = document.getElementById("hint");
+  var btnIos = document.getElementById("btn-ios");
+  var btnAndroid = document.getElementById("btn-android");
+  var params = new URLSearchParams(window.location.search);
+
+  var platform = detectPlatform();
+  var going = false;
+  var lang = detectLang();
+
+  function detectPlatform() {
+    var forced = params.get("platform");
+    if (forced === "ios" || forced === "android" || forced === "other") return forced;
+
+    var ua = navigator.userAgent || "";
+    var iPadAsMac = /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
+    if (/iPhone|iPad|iPod/i.test(ua) || iPadAsMac) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    return "other";
+  }
+
+  function detectLang() {
+    var forced = (params.get("lang") || "").toLowerCase();
+    if (COPY[forced]) return forced;
+
+    var list = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || "en"];
+    for (var i = 0; i < list.length; i++) {
+      var code = String(list[i]).toLowerCase().slice(0, 2);
+      if (COPY[code]) return code;
+    }
+    return "en";
+  }
+
+  function statusKey() {
+    if (!going) return "choose";
+    return platform === "ios" ? "openingIos" : "openingAndroid";
+  }
+
+  function applyLang(code) {
+    lang = code;
+    var t = COPY[code];
+
+    root.lang = code === "pt" ? "pt-BR" : code;
+    document.title = t.title;
+
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < nodes.length; i++) {
+      var key = nodes[i].getAttribute("data-i18n");
+      if (t[key] && nodes[i] !== statusEl) nodes[i].textContent = t[key];
+    }
+    statusEl.textContent = t[statusKey()];
+
+    var chips = document.querySelectorAll(".langs button");
+    for (var j = 0; j < chips.length; j++) {
+      chips[j].setAttribute("aria-pressed", chips[j].getAttribute("data-lang") === code ? "true" : "false");
+    }
+  }
+
+  function startRedirect(target) {
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ms = reduced ? REDUCED_MS : REDIRECT_MS;
+
+    going = true;
+    root.style.setProperty("--go", ms + "ms");
+    root.classList.add("is-going");
+    hintEl.hidden = false;
+    statusEl.textContent = COPY[lang][statusKey()];
+
+    window.setTimeout(function () {
+      window.location.replace(target);
+    }, ms);
+  }
+
+  root.setAttribute("data-platform", platform);
+  applyLang(lang);
+
+  var chips = document.querySelectorAll(".langs button");
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].addEventListener("click", function (event) {
+      applyLang(event.currentTarget.getAttribute("data-lang"));
+    });
+  }
+
+  if (!params.has("nogo")) {
+    if (platform === "ios") startRedirect(btnIos.href);
+    else if (platform === "android") startRedirect(btnAndroid.href);
+  }
+})();
+  </script>
+</body>
+</html>
